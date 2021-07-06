@@ -1,5 +1,7 @@
 const fetch = require("node-fetch");
 
+const path = process.env.slack_path;
+
 appStart();
 
 setInterval(getCapacity, 5 * 60 * 1000);
@@ -34,13 +36,10 @@ function appStart() {
 }
 
 function slack(message) {
-  return fetch(
-    "https://hooks.slack.com/services/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",
-    {
-      method: "post",
-      body: JSON.stringify({
-        text: message,
-      }),
-    }
-  );
+  return fetch(`https://hooks.slack.com/services/${path}`, {
+    method: "post",
+    body: JSON.stringify({
+      text: message,
+    }),
+  });
 }
