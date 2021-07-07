@@ -9,8 +9,9 @@ setInterval(displayCapacity, 60 * 60 * 1000);
 displayCapacity();
 getCapacity();
 
+let prevDates = [];
+
 async function getCapacity() {
-  console.log(Math.floor(Math.random() * 10) + " Scanning...");
   const res = await fetch(
     "https://www.liseberg.se/sv/api/capacity?from=2021-07-21&to=2021-07-23"
   );
@@ -30,7 +31,6 @@ async function getCapacity() {
 }
 
 async function displayCapacity() {
-  console.log("Hourly capacity check...");
   const res = await fetch(
     "https://www.liseberg.se/sv/api/capacity?from=2021-07-21&to=2021-07-23"
   );
@@ -40,11 +40,31 @@ async function displayCapacity() {
     const date = new Date(d.date);
     const day = `${date.getDate()}/${date.getMonth() + 1}`;
 
-    message += `:sunny: ${day} (${d.capacity}) \r\n `;
-    message += `:crescent_moon: ${day} (${d.eveningCapacity}) \r\n `;
+    let capacityDiff = 0;
+    let eveningCapacityDiff = 0;
+
+    if (prevDates.length > 0) {
+      const prevDate = prevDates.find((x) => x.date == d.date);
+      capacityDiff = Math.abs(d.capacity - prevDate.capacity);
+      eveningCapacityDiff = Math.abs(
+        d.eveningCapacity - prevDate.eveningCapacity
+      );
+    }
+
+    message += `:sunny: ${day} (${d.capacity}) `;
+    if (capacityDiff > 0) {
+      message += ` :chart_with_downwards_trend: ${$capacityDiff} diff!`;
+    }
+    message += "\r\n";
+    message += `:crescent_moon: ${day} (${d.eveningCapacity})`;
+    if (eveningCapacityDiff > 0) {
+      message += ` :chart_with_downwards_trend: ${$eveningCapacityDiff} diff!`;
+    }
+    message += "\r\n";
     message += `\r\n `;
   });
   slack(message);
+  prevDates = json.dates;
 }
 
 function alertSlackAboutTime(day) {
