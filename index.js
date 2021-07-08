@@ -58,7 +58,7 @@ async function displayCapacity() {
     message += "\r\n";
     message += `:crescent_moon: ${day} (${d.eveningCapacity})`;
     if (eveningCapacityDiff > 0) {
-      message += ` :chart_with_downwards_trend: ${$eveningCapacityDiff} diff!`;
+      message += ` :chart_with_downwards_trend: ${eveningCapacityDiff} diff!`;
     }
     message += "\r\n";
     message += `\r\n `;
