@@ -4,7 +4,7 @@ const path = process.env.slack_path;
 
 appStart();
 
-setInterval(getCapacity, 5 * 60 * 1000);
+setInterval(getCapacity, 5 * 1000);
 setInterval(displayCapacity, 60 * 60 * 1000);
 displayCapacity();
 getCapacity();
