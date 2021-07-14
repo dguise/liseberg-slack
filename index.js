@@ -2,33 +2,10 @@ const fetch = require("node-fetch");
 
 const path = process.env.slack_path;
 
-appStart();
-
-setInterval(getCapacity, 5 * 1000);
 setInterval(displayCapacity, 60 * 60 * 1000);
 displayCapacity();
-getCapacity();
 
 let prevDates = [];
-
-async function getCapacity() {
-  const res = await fetch(
-    "https://www.liseberg.se/sv/api/capacity?from=2021-07-21&to=2021-07-23"
-  );
-  const json = await res.json();
-
-  json.dates.forEach((d) => {
-    const date = new Date(d.date);
-    const day = `${date.getDate()} / ${date.getMonth() + 1}`;
-
-    if (d.capacity > 0) {
-      alertSlackAboutTime(`:sunny: ${day} - (${d.capacity})`);
-    }
-    if (d.eveningCapacity > 0) {
-      alertSlackAboutTime(`:crescent_moon: ${day} - (${d.eveningCapacity})`);
-    }
-  });
-}
 
 async function displayCapacity() {
   const res = await fetch(
@@ -65,14 +42,6 @@ async function displayCapacity() {
   });
   slack(message);
   prevDates = json.dates;
-}
-
-function alertSlackAboutTime(day) {
-  slack("Emil " + day);
-}
-
-function appStart() {
-  slack(":robot_face: Liseberg listener started. Slack integration working.");
 }
 
 function slack(message) {
